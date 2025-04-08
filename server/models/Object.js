@@ -1,16 +1,15 @@
-// models/Object.js
 const mongoose = require('mongoose');
 
-const ObjectSchema = new mongoose.Schema({
-  name: { type: String, required: true },
-  description: { type: String, required: false },
-  category: { type: String, required: true },
-  type: { type: String, required: true },
-  tags: { type: String, required: false },
-  size: { type: String, required: false },
-  barId: { type: String, required: false },
+const objectSchema = new mongoose.Schema({
+  name: String,
+  description: String,
+  category: String,
+  type: String,
+  tags: [String],
+  size: String,
+  barcodeId: String, // Unique ID for the barcode
 });
 
-const ObjectModel = mongoose.model('Object', ObjectSchema);
+const ObjectModel = mongoose.model('Object', objectSchema);
 
 module.exports = ObjectModel;
