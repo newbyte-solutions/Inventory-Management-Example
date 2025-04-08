@@ -61,7 +61,8 @@
 
 <script setup>
 import { ref } from 'vue';
-import bwipjs from 'bwip-js'; // Import bwip-js for barcode generation
+import bwipjs from 'bwip-js';
+import axios from 'axios';
 
 const form = ref({
   name: '',
@@ -72,35 +73,30 @@ const form = ref({
   size: '',
 });
 
-const barcodeImage = ref(null); // Store barcode image as a data URL
+const barcodeImage = ref(null);
 
 const handleSubmit = async () => {
   try {
-    // Generate a barcode ID (can be any string or unique identifier)
     const barcodeId = generateBarcodeId();
-
-    // Assign the barcodeId to form and generate barcode
     form.value.barcodeId = barcodeId;
     generateBarcode(barcodeId);
 
-    // You can send form data to your backend here (for now just log the form)
-    console.log(form.value);
+    // Send form data to backend using axios
+    const response = await axios.post('http://localhost:5000/create', form.value);
+    console.log('Server response:', response.data);
     alert('Object created successfully');
   } catch (error) {
-    console.error('Error generating barcode:', error);
+    console.error('Error:', error);
     alert('Error creating object');
   }
 };
 
-// Function to generate barcode ID
 const generateBarcodeId = () => {
   return Math.random().toString(36).substring(7);
 };
 
-// Function to generate barcode using bwip-js
 const generateBarcode = (barcodeId) => {
   try {
-    // Create the barcode as a data URL
     const canvas = document.createElement('canvas');
     bwipjs.toCanvas(canvas, {
       bcid: 'code128',
@@ -110,7 +106,6 @@ const generateBarcode = (barcodeId) => {
       includetext: true,
     });
 
-    // Convert canvas to image source
     barcodeImage.value = canvas.toDataURL();
   } catch (error) {
     console.error('Error generating barcode:', error);
@@ -119,7 +114,6 @@ const generateBarcode = (barcodeId) => {
 </script>
 
 <style scoped>
-/* Add custom CSS styling here */
 .form-container {
   max-width: 600px;
   margin: 0 auto;
